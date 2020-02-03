@@ -19,14 +19,20 @@ class SetAdditionalOptions implements ObserverInterface
      * @var RequestInterface
      */
     protected $_request;
+    /**
+     * @var \Magento\Framework\Serialize\Serializer\Json
+     */
+    private $serialize;
 
     /**
      * @param RequestInterface $request
      */
     public function __construct(
-        RequestInterface $request
+        RequestInterface $request,
+        \Magento\Framework\Serialize\Serializer\Json $serialize
     ) {
         $this->_request = $request;
+        $this->serialize = $serialize;
     }
 
     /**
@@ -42,7 +48,7 @@ class SetAdditionalOptions implements ObserverInterface
                 'label' => "Some Label",
                 'value' => "Your Information",
             );
-            $observer->getProduct()->addCustomOption('additional_options', serialize($additionalOptions));
+            $observer->getProduct()->addCustomOption('additional_options', json_encode($additionalOptions));
         }
     }
 }
