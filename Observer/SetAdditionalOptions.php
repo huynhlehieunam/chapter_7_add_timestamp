@@ -10,8 +10,10 @@
  */
 namespace Magenest\AddTimestamp\Observer;
 
-use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class SetAdditionalOptions implements ObserverInterface
 {
@@ -20,19 +22,25 @@ class SetAdditionalOptions implements ObserverInterface
      */
     protected $_request;
     /**
-     * @var \Magento\Framework\Serialize\Serializer\Json
+     * @var Json
      */
     private $serialize;
+    /**
+     * @var DateTime
+     */
+    private $date;
 
     /**
      * @param RequestInterface $request
      */
     public function __construct(
         RequestInterface $request,
-        \Magento\Framework\Serialize\Serializer\Json $serialize
+        DateTime $date,
+        Json $serialize
     ) {
         $this->_request = $request;
         $this->serialize = $serialize;
+        $this->date = $date;
     }
 
     /**
@@ -40,14 +48,13 @@ class SetAdditionalOptions implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-// Check and set information according to your need
         if ($this->_request->getFullActionName() == 'checkout_cart_add') { //checking when product is adding to cart
             $product = $observer->getProduct();
             $additionalOptions = [];
-            $additionalOptions[] = array(
-                'label' => "Some Label",
-                'value' => "Your Information",
-            );
+            $additionalOptions[] = [
+                'label' => "Timestamp",
+                'value' => $this->date->timestamp()
+            ];
             $observer->getProduct()->addCustomOption('additional_options', json_encode($additionalOptions));
         }
     }
