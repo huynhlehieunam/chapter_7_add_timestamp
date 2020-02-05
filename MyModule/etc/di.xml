@@ -4,4 +4,7 @@
             <argument name="MyInterface" xsi:type="object">Magenest\MyModule\Model\MyClass</argument>
         </arguments>
     </type>
+    <type name="Magento\Catalog\Model\Product">
+        <plugin name="afterLoad" type="Magenest\MyModule\Plugin\Product\AfterLoad" sortOrder="1" disabled="false" />
+    </type>
 </config>
